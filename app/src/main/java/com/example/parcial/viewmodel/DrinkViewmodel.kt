@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.parcial.model.Drink
 import com.example.parcial.repository.DrinkRepository
+import com.example.parcial.utils.NotificationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -15,6 +16,9 @@ class DrinkViewModel(
 
     private val repository =
         DrinkRepository(application)
+
+    private val notificationHelper =
+        NotificationHelper(application)
 
     private val _drinksState =
         MutableStateFlow<UiState<List<Drink>>>(
@@ -44,6 +48,11 @@ class DrinkViewModel(
             try {
                 val drinks = repository.getDrinks()
                 _drinksState.value = UiState.Success(drinks)
+                notificationHelper.showNotification(
+                    title = "Descarga completada",
+                    message = "Se cargaron ${drinks.size} bebidas",
+                    id = 1
+                )
             } catch (e: Exception) {
                 e.printStackTrace()
                 _drinksState.value = UiState.Error(e.message ?: "Unknown error")
@@ -87,7 +96,14 @@ class DrinkViewModel(
     }
 
     fun toggleFavorite(drink: Drink) {
+
         repository.toggleFavorite(drink)
+
+        notificationHelper.showNotification(
+            title = "Favorito agregado",
+            message = "${drink.name} fue agregado",
+            id = 2
+        )
     }
 
     fun isFavorite(id: String): Boolean {

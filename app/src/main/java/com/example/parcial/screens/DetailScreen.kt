@@ -171,7 +171,8 @@ fun DetailScreen(
                                         if (it)
                                             "Agregado a favoritos"
                                         else
-                                            "Eliminado de favoritos"
+                                            "Eliminado de favoritos",
+                                        2
                                     )
                             }
                         )
